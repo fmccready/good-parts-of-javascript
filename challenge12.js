@@ -287,27 +287,23 @@ function continuize(unary){
     };
 }
 
-
-function vector() {
-    var array = [1, 2, 3];
-    return {
-        get: function get(i) {
-            return array[i];
+function pubsub(){
+    var subscribers = [];
+    return Object.freeze({
+        subscribe: function(subscriber){
+            subscribers.push(subscriber);
         },
-        store: function store(i, v){
-            array[i] = v;
-        },
-        append: function append(v){
-            array.push(v);
+        publish: function(publication){
+            subscribers.forEach(function(s){
+                setTimeout(function(){
+                    s(publication);
+                }, 0);
+            });
         }
-    }
+    });
 }
 
-myvector = vector();
+my_pubsub = pubsub();
+my_pubsub.subscribe(console.log);
+my_pubsub.publish("It works!");
 
-var stash;
-myvector.store('push', function(){
-    stash = this;
-});
-myvector.append();
-console.log(stash);
